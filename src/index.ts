@@ -1,9 +1,23 @@
+import Server from './server/server';
+import logger from './shared/logger';
+
+const server = Server.instance;
+server.start( ()=> {
+    logger.info(`Server started on ${server.port}`);
+});
+
+
+
+/* v.0
 import express from "express"
+import * as bodyParser from "body-parser";
 import compression from "compression"
 import helmet from "helmet"
 import morgan from "morgan"
 import logger from './shared/logger';
+import cors from 'cors';
 
+import { Routes } from "./config/routes";
 import config from "./config"
 import {pool} from "./database/postgres";
 
@@ -40,3 +54,5 @@ const app = express()
    });
     
 export default app;
+*/
+
