@@ -1,0 +1,16 @@
+import config from "../config";
+
+// npm install @types/pg
+import { Client , ClientConfig } from 'pg';
+
+const connectionData: ClientConfig = {
+    user: config.DATABASE_USER ,
+    host: config.DATABASE_HOST,
+    database: config.DATABASE_NAME ,
+    password: config.DATABASE_PASSWORD ,
+    port: Number(config.DATABASE_PORT)
+  };
+
+
+  export const client = new Client(connectionData);
+
