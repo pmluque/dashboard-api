@@ -1,6 +1,7 @@
 import Server from './server/server';
 import logger from './shared/logger';
 
+
 const server = Server.instance;
 server.start( ()=> {
     logger.info(`Server started on ${server.port}`);

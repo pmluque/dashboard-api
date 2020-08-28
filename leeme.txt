@@ -1,0 +1,2 @@
+Generar:  > npm install
+Iniciar:  > npm run serve

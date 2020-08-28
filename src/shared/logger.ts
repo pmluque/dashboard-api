@@ -1,9 +1,12 @@
 import { createLogger, format, transports } from 'winston';
+// Configuración
+import config from '../config'
+
 // Import Functions
 const { File, Console } = transports;
 // Init Logger
 const logger = createLogger({
-   level: 'info',
+   level: config.LOG_LEVEL,
 });
 const errorStackFormat = format((info) => {
    if (info.stack) {

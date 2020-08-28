@@ -58,7 +58,13 @@ export default class Server {
         // this.app.use(express.json())
         // this.app.use(express.urlencoded({ extended: false }))
         // CORS
-        this.app.use( cors({origin:true , credentials:true }));      
+        const corsOptions = {
+          origin: true,
+          credentials:true
+        };
+        // this.app.use( cors({origin:true , credentials:true }));
+        this.app.use( cors(corsOptions));
+              
         this.app.use(compression())
         //app.use(morgan("combined"))
         this.app.use(morgan(':response-time ms - :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'));
