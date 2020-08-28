@@ -6,9 +6,10 @@ import { codes } from '../database/codes';
 
 
 const insertSchema = Joi.object().keys({
-    "username": Joi.string().email().required(),
+    "username": Joi.string().min(6).required(),
     "password": Joi.string().min(5).max(128).required(),
-    "name": Joi.string().required()
+    "name": Joi.string().required(),
+    "email": Joi.string().email().required()    
 })
 
 export function insertValidator(req: Request, res: Response, next: NextFunction) {

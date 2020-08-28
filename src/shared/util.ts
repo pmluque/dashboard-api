@@ -9,12 +9,23 @@ export async function generateSalt(){
 
 export async function sendConfirmationEmail(email: string) {
     const methodName='sendConfirmationEmail'
-    logger.debug(`${methodName} entro en sendConfirmationEmail ...`)
-    let uniqueCode = ''
+
     generateSalt()
-       .then( (salt) => {
-           uniqueCode = salt
+       .then( (uniqueCode) => {
+         
            logger.debug(`${methodName} uniqueCode: ${uniqueCode}`)
+           // Acceso al cliente REDIS 24h de vida 
+           /*
+           try{
+               if( config.REDIS_CLIENT !== null && config.REDIS_CLIENT !== undefined ){
+                  config.REDIS_CLIENT.setex(`confirmation_${email}`, 60*60*24, uniqueCode)
+               }  
+           }catch(error) {
+               logger.error('Servicio REDIS indisponible' , error )
+           } 
+           */    
+
+           // Composición del enlace que se incluirá en el cuerpo del correo para hacer la confirmación
            const link = `${config.APP_DOMAIN}/confirmemail?email=${email}&c=${uniqueCode}`
            try {
                 sendEmail("confirmation", {

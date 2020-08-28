@@ -9,13 +9,14 @@ export class AuthService {
     constructor() {}
 
     /**
-    register: registra usuarios
+    register: registra usuarios en una tabla genérica
     Tabla: sc_uses
         username character varying(100)NOT NULL,
+        password character varying(100)NOT NULL,        
         name character varying(100) NOT NULL,
-        password character varying(100)NOT NULL,
-        token character varying(100) 
-        status character varying(10) DEFAULT 'locked'
+        status character varying(10) DEFAULT 'locked',        
+        token character varying(100) ,
+        isUserConfirmed BOOLEAN DEFAULT FALSE,
         date_created timestamp with time zone NOT NULL DEFAULT now(),
         date_modified timestamp with time zone,
         created_by character varying(100) COLLATE pg_catalog."default" NOT NULL DEFAULT 'api'::character varying,
@@ -32,4 +33,14 @@ export class AuthService {
         if(doesUserExist.username === username) throw new Error("User is already registered");
         */
     }
+
+    /**
+     * confirmEmail
+     * It will check if the email exists and if the received token matches the token stored in Redis, 
+     * if satisfied, it updates the `isUserConfirmed` column for that user in the table.
+     * 
+     * @param email 
+     * @param code : unicode para el reconocimiento del email
+     */
+    confirmEmail(email: string, code: string) {}
 }

@@ -88,14 +88,14 @@ export class UserController {
    * @param req 
    * @param res 
    */
-  public async findOne(req: Request, res: Response) {
+  public async findOneByEmail(req: Request, res: Response) {
     const methodName = 'findOne';
     // Params
     // Ej. const id = parseInt(request.params.id)
-    let username = req.params.username;
-    logger.info(`username : ${username}`);
+    let email = req.params.email;
+    logger.info(`username : ${email}`);
 
-    pool.query( sql["user.findOne"] , [username] , (error, results) => {
+    pool.query( sql["user.findOneByEmail"] , [email] , (error, results) => {
   
       if (error) {
   
@@ -113,12 +113,12 @@ export class UserController {
   
       if ( results.rows.length === 0){
   
-        logger.warn( methodName , `${username} not exists`);
+        logger.warn( methodName , `${email} not exists`);
         return res.status(400).json( {
           ok: false,
           error: {
               code: codes["NOT FOUND"] ,
-              message: `${username} not exists`
+              message: `${email} not exists`
           },
           message:`No returned data from ${methodName}`
          });
@@ -145,7 +145,7 @@ export class UserController {
    * @param req 
    * @param res 
    * 
-   * TestCase - name:Silvia , username: silvia@gmail.com , password: Silvia123
+   * TestCase - name:Silvia , username: silvia , password: Silvia123, email: silvia@gmail.com 
    * Ref. Cómo verificar la password
       await argon2.verify( passwordHashed , user.password ).then(() => { 
           console.log('Successful password supplied!');
@@ -163,8 +163,9 @@ export class UserController {
     //   Ej. const id = parseInt(request.params.id)
     // Body
     const user = { 
-        name: req.body.name.trim() , 
-        username: req.body.username.trim(),
+        name: req.body.name.trim() ,      
+        email: req.body.email.trim() ,       
+        username: req.body.name.trim(),
         password: req.body.password.trim(),
         salt:''
     };
@@ -173,7 +174,7 @@ export class UserController {
 
     // 1. Comprobar que no existe 
 
-    pool.query( sql["user.findOne"] , [user.username] , (error, results) => {
+    pool.query( sql["user.findOneByEmail"] , [user.email] , (error, results) => {
   
       if (error) {
           logger.error( methodName , error);
@@ -183,7 +184,7 @@ export class UserController {
                 code: codes["BAD REQUEST"] ,
                 message: error
             },
-            message:`No returned data from ${methodName}`
+            message:`Actualmente el servicio está indisponible. Consulte con el administrador`
            });    
       }
     
@@ -193,9 +194,9 @@ export class UserController {
           ok: false,
           error: {
               code: codes["UNSUCCESSFUL PRE-INSERT"] ,
-              message: `${user.username} already exists`
+              message: `${user.email} already exists so the insert was cancelled`
           },
-          message:`No returned data from ${methodName}`
+          message:`No se inserto ningún registro porque ya existe una cuenta con el email: ${user.email}`
          });
       }
 
@@ -216,7 +217,7 @@ export class UserController {
                    logger.debug(`Nueva password: ${user.password}` );
                
                    // 2. Insertamos registro
-                   pool.query( sql["user.insert"] , [user.name, user.username, user.password , ] , (error, results) => {
+                   pool.query( sql["user.insert"] , [user.name, user.username, user.password , user.email] , (error, results) => {
                
                      if (error) {
                
@@ -235,13 +236,13 @@ export class UserController {
                      const resp = {
                        ok: true,
                        data: {
-                           user: results.rows[0]
+                           user
                        },
-                       message:`Returned data from ${methodName}`
+                       message:`Inserción correcta.`
                      };
    
                      // 3. Enviar correo para confirmación
-                     util.sendConfirmationEmail( user.username.trim())
+                     util.sendConfirmationEmail( user.email.trim())
        
                      // -----------------------------------------------
                      
@@ -274,12 +275,12 @@ export class UserController {
  
     // Query
     // Params
-    let username = req.params.username;
-    logger.debug(`username : ${username}`);
+    let email = req.params.email;
+    logger.debug(`username : ${email}`);
     // Body
 
     // 1. Comprobar que no existe 
-    pool.query( sql["user.findOne"] , [username] , (error, results) => {
+    pool.query( sql["user.findOneByEmail"] , [email] , (error, results) => {
   
       if (error) {
           logger.error( methodName , error);
@@ -299,7 +300,7 @@ export class UserController {
           ok: false,
           error: {
               code: codes["UNSUCCESSFUL PRE-DELETE"] ,
-              message: `${username} doesn't exist !`
+              message: `${email} doesn't exist !`
           },
           message:`No returned data from ${methodName}`
          });
@@ -309,7 +310,7 @@ export class UserController {
     
       // ----- Cifrar la password
       // ----- Ref. https://stormpath.com/blog/secure-password-hashing-in-node-with-argon2
-      pool.query( sql["user.delete"] , [username] , (error, results) => {
+      pool.query( sql["user.delete"] , [email] , (error, results) => {
       
             if (error) {
       
@@ -328,7 +329,7 @@ export class UserController {
             const resp = {
               ok: true,
               data: {
-                  user: username
+                  email
               },
               message:`Delete record using ${methodName}`
           };

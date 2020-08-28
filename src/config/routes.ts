@@ -22,8 +22,8 @@ export class Routes {
         .post([insertValidator], this.userController.insert) 
         ;         
 
-    app.route("/api/users/:username")
-        .get(this.userController.findOne)
+    app.route("/api/users/:email")
+        .get(this.userController.findOneByEmail)
         .delete(this.userController.delete)        
         ;
 

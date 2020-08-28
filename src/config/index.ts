@@ -8,9 +8,19 @@
  */
 import * as dotenv from "dotenv"
 import { createTransport } from "nodemailer"
+import redis from "redis"
+import logger from '../shared/logger';
+
 dotenv.config()
 
+/*
+REDIS
 
+const redisClient=redis.createClient({
+        port: Number(process.env.REDIS_PORT)
+      });
+
+*/
 /*
 SMTP
         Como configurar el servidor SMTP de Gmail
@@ -39,15 +49,7 @@ const transport = createTransport({
         }
 })
 
-/*
-const transport = createTransport("SMTP" , {
-        service: "Gmail",
-        auth: {
-            user: smtp.USERNAME,
-            pass: smtp.PASSWORD
-        }
-})    
-*/
+
 export default {
         NODE_ENV: process.env.NODE_ENV ,
         APP_NAME: process.env.APP_NAME,
@@ -62,6 +64,6 @@ export default {
             options: smtp,
             transporter: transport
         },
-        LOG_LEVEL: process.env.LOG_LEVEL
-
+        LOG_LEVEL: process.env.LOG_LEVEL,        
+        //REDIS_CLIENT: redisClient,
 }
